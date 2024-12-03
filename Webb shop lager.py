@@ -143,7 +143,7 @@ while True:
                     done = input("(A) Go back?")
                 else:
                     print("Invalid product")
-                    sleep(0.3)
+                    sleep(1)
                 
                 if done == "A":
                     os.system('cls' if os.name == 'nt' else 'clear')
@@ -155,16 +155,16 @@ while True:
                     id = selected_product['id']  # Extract the actual ID of the product
 
                     print(remove_product(products, id))  # Remove product using the actual ID
-                    sleep(0.5)
+                    sleep(1)
                     os.system('cls' if os.name == 'nt' else 'clear')            
 
                 else:
                     print("Invalid product")
-                    sleep(0.3)
+                    sleep(1)
         
     except ValueError:
         print("Choose a prouct with a number")
-        sleep(0.5)
+        sleep(1)
 
 
     # Define the CSV file path
