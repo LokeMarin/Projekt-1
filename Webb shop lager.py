@@ -53,7 +53,7 @@ def view_product(products, id):
         # Check if the product's id matches the given id
         if product["id"] == id:
             # If it matches, return the product's name and description
-            return f"Viewing product: {product['name']} {product['desc']}"
+            return f"(Viewing product): \n{product['name']} \nPrice: {locale.currency(product['price'], grouping=True)} \nQuantity: {product['quantity']} {('left')} \nDescreption: \n{product['desc']}\n"
     
     # If no matching product is found, return this message
     return "Product could not be found"
@@ -130,11 +130,18 @@ while True:
             print(add_products(products, name, desc, price, quantity))
         
         elif choice == "D":
+            print("Shutting down...")
+            sleep(1)
+            os.system('cls' if os.name == 'nt' else 'clear')
+            print("Thanks for shopping with us!")
+            sleep(1)
             break
 
-        elif choice in ["B", "C"]:
+        elif choice in ["B", "C"]: 
+        
             index = int(input("Enter product ID: "))
-            
+            os.system('cls' if os.name == 'nt' else 'clear')
+
             if choice == "B":   #visa
                 if 1 <= index <= len(products):  # Ensure the index is within the valid range
                     selected_product = products[index - 1]  # Get the product using the list index
@@ -146,7 +153,8 @@ while True:
                     sleep(1)
                 
                 if done == "A":
-                    os.system('cls' if os.name == 'nt' else 'clear')
+                    print("Returning...")
+                    sleep(1)
                     break
                     
             elif choice == "C": #ta bort
