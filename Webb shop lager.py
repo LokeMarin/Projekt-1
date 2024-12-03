@@ -39,7 +39,7 @@ def remove_product(products, id):
         if product["id"] == id:
             temp_product = product
             break  # Avsluta loopen så snart produkten hittas
-
+    
     if temp_product:
         products.remove(temp_product)
         return f"Product: {id} {temp_product['name']} was removed"
@@ -149,13 +149,14 @@ while True:
                     os.system('cls' if os.name == 'nt' else 'clear')
                     break
                     
-            elif choice == "R": #ta bort
+            elif choice == "C": #ta bort
                 if 1 <= index <= len(products):  # Ensure the index is within the valid range
                     selected_product = products[index - 1]  # Get the product using the list index
                     id = selected_product['id']  # Extract the actual ID of the product
 
                     print(remove_product(products, id))  # Remove product using the actual ID
-                    sleep(0.5)            
+                    sleep(0.5)
+                    os.system('cls' if os.name == 'nt' else 'clear')            
 
                 else:
                     print("Invalid product")
