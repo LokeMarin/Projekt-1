@@ -113,7 +113,7 @@ while True:
         
         print(view_products(products))  # Show ordered list of products
 
-        choice = input("Would you like to (A) Add a product, (B) View , (C) Remove a product or (D) Cancel ").strip().upper()
+        choice = input("Would you like to (A) Add a product, (v) View , (R) Remove a product or (C) Cancel ").strip().upper()
 
         
 
@@ -148,14 +148,14 @@ while True:
                     id = selected_product['id']  # Extract the actual ID of the product
                     print(view_product(products, id))  # Remove product using the actual ID
                     done = input("(A) Go back?")
+                    if done == "A":
+                        print("Returning...")
+                        sleep(1)
+                       
                 else:
                     print("Invalid product")
                     sleep(1)
                 
-                if done == "A":
-                    print("Returning...")
-                    sleep(1)
-                    break
                     
             elif choice == "C": #ta bort
                 if 1 <= index <= len(products):  # Ensure the index is within the valid range
