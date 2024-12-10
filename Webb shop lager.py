@@ -29,7 +29,22 @@ def load_data(filename):
     return products
 
 
+class bcolors:
+    #ANSI escape sequences for terminal text formatting.
 
+    PURPLE = '\033[95m'
+    BLUE = '\033[94m'
+    CYAN = '\033[96m'
+    GREEN = '\033[92m'
+    YELLOW = '\033[93m'
+    RED = '\033[91m'
+    DEFAULT = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+
+    # @staticmethod
+    # def color_text(text, color):
+    #     return f"{color}{text}{BColors.DEFAULT}"
 
 #gör en funktion som hämtar en produkt
 def remove_product(products, id):
@@ -44,32 +59,49 @@ def remove_product(products, id):
         products.remove(temp_product)
         return f"Product: {id} {temp_product['name']} was removed"
     else:
-        return f"Product with id {id} not found"
+        return f"Product with id {id} not found, please try again"
 
 
-def view_product(products, id):
+def view_product(products, id, bcolor = bcolors):
     # Go through each product in the list
     for product in products:
         # Check if the product's id matches the given id
         if product["id"] == id:
             # If it matches, return the product's name and description
-            return f"(Viewing product): \n{product['name']} \nPrice: {locale.currency(product['price'], grouping=True)} \nQuantity: {product['quantity']} {('left')} \nDescreption: \n{product['desc']}\n"
+            return f"{bcolors.BOLD}(Viewing product):{bcolors.DEFAULT} \n {product['name']} \n \n Price: {bcolors.UNDERLINE}{locale.currency(product['price'], grouping=True)}{bcolors.DEFAULT} \n Quantity: {bcolors.UNDERLINE}{product['quantity']} {('left')}{bcolors.DEFAULT} \n \n {bcolors.BOLD}{bcolors.UNDERLINE}Descreption:{bcolors.DEFAULT} \n {product['desc']} \n "
     
     # If no matching product is found, return this message
     return "Product could not be found"
 
-def view_products(products, max_desc_length=20, max_name_length=17):
+def view_products(products, max_desc_length=20, max_name_length=17, bcolors = bcolors):
     product_list = []
+
+    # Header och separator
+    header = f" {bcolors.BOLD}{'ID':>2} \t {'Name'} \t {'Description':>27} \t {'Price':>21} \t {'Quantity':>16}{bcolors.DEFAULT}"
+    separator = "--" * 45
+
+    # Lägg till header och separator i listan
+    product_list.append(header)
+    product_list.append(separator)
+    
     for index, product in enumerate(products, 1):
-        shorten_name = product['name']
-        if len(shorten_name) > max_name_length:       #gör namnet kortare
+        
+        
+
+        shorten_name = product['name']                #gör namnet kortare
+        if len(shorten_name) > max_name_length:       
             shorten_name = shorten_name[:max_name_length] + "..." 
+        
         shorten_desc = product['desc']                #gör desc kortare
         if len(shorten_desc) > max_desc_length:
             shorten_desc = shorten_desc[:max_desc_length] + "..."
-        product_info = f"{index}) (#{product['id']}) {shorten_name} \t {shorten_desc} \t {locale.currency(product['price'], grouping=True)} \t {product['quantity']} {('left')}"
+
+        product_info = f"(#{product['id']}) \t {bcolors.BOLD}{shorten_name:<17}{bcolors.DEFAULT} \t {shorten_desc:<25} \t {bcolors.UNDERLINE}{locale.currency(product['price'], grouping=True)}{bcolors.DEFAULT} \t {product['quantity']:>1} {('left'):>1}"
         product_list.append(product_info)
     
+    product_list.append(separator)
+      
+
     return "\n".join(product_list)
 
 
@@ -113,7 +145,7 @@ while True:
         
         print(view_products(products))  # Show ordered list of products
 
-        choice = input("Would you like to (A) Add a product, (v) View , (R) Remove a product or (C) Cancel ").strip().upper()
+        choice = input("Would you like to (A) Add a product, (V) View , (R) Remove a product or (C) Cancel ").strip().upper()
 
         
 
@@ -129,7 +161,7 @@ while True:
 
             print(add_products(products, name, desc, price, quantity))
         
-        elif choice == "D":
+        elif choice == "C":
             print("Shutting down...")
             sleep(1)
             os.system('cls' if os.name == 'nt' else 'clear')
@@ -137,18 +169,18 @@ while True:
             sleep(1)
             break
 
-        elif choice in ["B", "C"]: 
+        elif choice in ["V", "R"]: 
         
             index = int(input("Enter product ID: "))
             os.system('cls' if os.name == 'nt' else 'clear')
 
-            if choice == "B":   #visa
+            if choice == "V":   #visa
                 if 1 <= index <= len(products):  # Ensure the index is within the valid range
                     selected_product = products[index - 1]  # Get the product using the list index
                     id = selected_product['id']  # Extract the actual ID of the product
                     print(view_product(products, id))  # Remove product using the actual ID
-                    done = input("(A) Go back?")
-                    if done == "A":
+                    done = input("(G) Go back?")
+                    if done == "G":
                         print("Returning...")
                         sleep(1)
                        
@@ -157,7 +189,7 @@ while True:
                     sleep(1)
                 
                     
-            elif choice == "C": #ta bort
+            elif choice == "R": #ta bort
                 if 1 <= index <= len(products):  # Ensure the index is within the valid range
                     selected_product = products[index - 1]  # Get the product using the list index
                     id = selected_product['id']  # Extract the actual ID of the product
