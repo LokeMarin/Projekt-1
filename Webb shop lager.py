@@ -4,7 +4,7 @@ import locale
 from time import sleep
 
 
-
+# laddar in filen och gör om den så att den kan ändras och användas
 def load_data(filename): 
     products = [] 
     
@@ -17,8 +17,8 @@ def load_data(filename):
             price = float(row['price'])
             quantity = int(row['quantity'])
             
-            products.append(        #list
-                {                    #dictionary
+            products.append(        # lista
+                {                    # dictionary
                     "id": id,       
                     "name": name,
                     "desc": desc,
@@ -28,7 +28,7 @@ def load_data(filename):
             )
     return products
 
-
+# färger och format för att ändra text
 class bcolors:
     #ANSI escape sequences for terminal text formatting.
 
@@ -46,15 +46,16 @@ class bcolors:
     # def color_text(text, color):
     #     return f"{color}{text}{BColors.DEFAULT}"
 
-#gör en funktion som hämtar en produkt
+# gör en funktion som hämtar en produkt
 def remove_product(products, id):
     temp_product = None
 
     for product in products:
         if product["id"] == id:
             temp_product = product
-            break  # Avsluta loopen så snart produkten hittas
+            break  # avsluta loopen så snart produkten hittas
     
+    # gör så att produkten tas bort
     if temp_product:
         products.remove(temp_product)
         return f"Product: {id} {temp_product['name']} was removed"
@@ -63,24 +64,25 @@ def remove_product(products, id):
 
 
 def view_product(products, id, bcolor = bcolors):
-    # Go through each product in the list
+    # går igenom listan av produkter
     for product in products:
-        # Check if the product's id matches the given id
+        # kollar om den matchar
         if product["id"] == id:
-            # If it matches, return the product's name and description
+            # om produkten matchar id, så retunerar den en snygg liten lista med produktes name och beskrivning 
             return f"{bcolors.BOLD}(Viewing product):{bcolors.DEFAULT} \n {product['name']} \n \n Price: {bcolors.UNDERLINE}{locale.currency(product['price'], grouping=True)}{bcolors.DEFAULT} \n Quantity: {bcolors.UNDERLINE}{product['quantity']} {('left')}{bcolors.DEFAULT} \n \n {bcolors.BOLD}{bcolors.UNDERLINE}Descreption:{bcolors.DEFAULT} \n {product['desc']} \n "
     
-    # If no matching product is found, return this message
+    # om den inte matchar så retunerar den, denna nedre text 
     return "Product could not be found"
+
 
 def view_products(products, max_desc_length=20, max_name_length=17, bcolors = bcolors):
     product_list = []
 
-    # Header och separator
+    # headern och separatorn
     header = f" {bcolors.BOLD}{'ID':>2} \t {'Name'} \t {'Description':>27} \t {'Price':>21} \t {'Quantity':>16}{bcolors.DEFAULT}"
     separator = "--" * 45
 
-    # Lägg till header och separator i listan
+    # lägger till en header och separator i listan
     product_list.append(header)
     product_list.append(separator)
     
@@ -88,32 +90,33 @@ def view_products(products, max_desc_length=20, max_name_length=17, bcolors = bc
         
         
 
-        shorten_name = product['name']                #gör namnet kortare
+        shorten_name = product['name']                # gör namnet kortare
         if len(shorten_name) > max_name_length:       
             shorten_name = shorten_name[:max_name_length] + "..." 
         
-        shorten_desc = product['desc']                #gör desc kortare
+        shorten_desc = product['desc']                # gör desc kortare
         if len(shorten_desc) > max_desc_length:
             shorten_desc = shorten_desc[:max_desc_length] + "..."
-
-        product_info = f"(#{product['id']}) \t {bcolors.BOLD}{shorten_name:<17}{bcolors.DEFAULT} \t {shorten_desc:<25} \t {bcolors.UNDERLINE}{locale.currency(product['price'], grouping=True)}{bcolors.DEFAULT} \t {product['quantity']:>1} {('left'):>1}"
+        
+        # många \t, bcolors och :<X/:>X användes har för att ge listan en mer snygare utseende
+        product_info = f"(#{product['id']}) \t {bcolors.BOLD}{shorten_name:<17}{bcolors.DEFAULT} \t {shorten_desc:<25} \t {bcolors.UNDERLINE}{locale.currency(product['price'], grouping=True)}{bcolors.DEFAULT} \t {product['quantity']:>2} {('left'):>5}"
         product_list.append(product_info)
     
-    product_list.append(separator)
+    product_list.append(separator) # lägger in samma header men under listan men över instruktionerna 
       
 
     return "\n".join(product_list)
 
 
-    
+# lägger in producterna i produkt listan och ger den ett eget nytt id
 def add_products(products, name, desc, price, quantity):
-    max_id = max(products, key=lambda x: x['id']) #lambda är liten funktion utan namn som hämtar nycklels värde från dictionary
+    max_id = max(products, key=lambda x: x['id']) # lambda är liten funktion utan namn som hämtar nycklels värde från dictionary
 
-    id_value = max_id['id']     #id_value är största id:t i hela databasen
+    id_value = max_id['id']     # id_value är största id:t i hela databasen
 
-    new_id = id_value + 1   #skapa ett större och unikt id
+    new_id = id_value + 1   # skapa ett större och unikt id
 
-
+    # lägger till och formaterar den tillagda produkten in i listan 
     products.append(
         {
         "id": new_id,
@@ -125,10 +128,6 @@ def add_products(products, name, desc, price, quantity):
     )
     
     return f"Added item: {id}"
-
-
-#TODO: gör om så du slipper använda global-keyword (flytta inte "product = []")
-#TODO: skriv en funktion som returnerar en specifik produkt med hjälp av id
 
 
 locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')  
@@ -143,16 +142,16 @@ while True:
         
 
         
-        print(view_products(products))  # Show ordered list of products
+        print(view_products(products))  # printar ut listan 
 
-        choice = input("Would you like to (A) Add a product, (V) View , (R) Remove a product or (C) Cancel ").strip().upper()
+        choice = input("Would you like to (A) Add a product, (V) View , (R) Remove a product or (C) Cancel ").strip().upper() # ett input som också ger dig instruktioner om knapparna
 
         
 
         if choice == "A":
-            #skapa ett nytt id
-            #ta in information som jag ska spara
-            #sen måste jag spara allt i products (lista med dictonaries inuti)
+            # skapa ett nytt id
+            # tar in information som ska sparas
+            # sen sparar allt i products (listan med dictonaries inuti)
 
             name = input("Name of product: ")
             desc = input("Descreption: ")
@@ -161,6 +160,7 @@ while True:
 
             print(add_products(products, name, desc, price, quantity))
         
+        # stänger av programmet 
         elif choice == "C":
             print("Shutting down...")
             sleep(1)
@@ -168,52 +168,54 @@ while True:
             print("Thanks for shopping with us!")
             sleep(1)
             break
-
+        
+        # V låter dig vissa en produkt som du har valt och visar all info om produkten. R tar bort en produkt som du har valt
         elif choice in ["V", "R"]: 
         
             index = int(input("Enter product ID: "))
             os.system('cls' if os.name == 'nt' else 'clear')
 
             if choice == "V":   #visa
-                if 1 <= index <= len(products):  # Ensure the index is within the valid range
-                    selected_product = products[index - 1]  # Get the product using the list index
-                    id = selected_product['id']  # Extract the actual ID of the product
-                    print(view_product(products, id))  # Remove product using the actual ID
-                    done = input("(G) Go back?")
+                if 1 <= index <= len(products):  # ser till att indexet ligger inom det giltiga intervallet
+                    selected_product = products[index - 1]  # tar produkten med hjälp av listindexet
+                    id = selected_product['id']  # extrahera produktens id
+                    print(view_product(products, id))  # printar ut så du kan see hela sidan för produkt infot
+                    done = input("(G) Go back?")    # låter användaren att gå tillbaka till listan
                     if done == "G":
                         print("Returning...")
                         sleep(1)
-                       
+
+                # error check      
                 else:
                     print("Invalid product")
                     sleep(1)
                 
                     
             elif choice == "R": #ta bort
-                if 1 <= index <= len(products):  # Ensure the index is within the valid range
-                    selected_product = products[index - 1]  # Get the product using the list index
-                    id = selected_product['id']  # Extract the actual ID of the product
-
-                    print(remove_product(products, id))  # Remove product using the actual ID
+                if 1 <= index <= len(products):  # ser till att indexet ligger inom det giltiga intervallet
+                    selected_product = products[index - 1]  # tar produkten med hjälp av listindexet
+                    id = selected_product['id']  # extrahera produktens ID
+                    print(remove_product(products, id))  # tar bort produkten med hjälp av id
                     sleep(1)
                     os.system('cls' if os.name == 'nt' else 'clear')            
 
+                # error check
                 else:
                     print("Invalid product")
                     sleep(1)
-        
+    # error check    
     except ValueError:
         print("Choose a prouct with a number")
         sleep(1)
 
 
-    # Define the CSV file path
+    # definerar file vägen
     csv_file_path = "lokes_products.csv"
 
-    # Write the products data to a CSV file
+    # skriver ut produktens data till en CSV file
     with open(csv_file_path, mode='w', newline='') as file:
         writer = csv.DictWriter(file, fieldnames=["id", "name", "desc", "price", "quantity"])
-        writer.writeheader()  # Write the header row
-        writer.writerows(products)  # Write the product data
+        writer.writeheader()  # skriver ut header row
+        writer.writerows(products)  # skriver produkt datan
 
     print(f"Data successfully saved to {csv_file_path}")
